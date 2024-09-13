@@ -2,16 +2,17 @@
 
 //Todo
 //Fancier start screen
-//Save highscore in file, inbetween sessions   
+//Save highscore in file inbetween sessions   
 
 int highscore = 0;
 while (true)
 {
+    ConsoleKeyInfo cki;
     Console.WriteLine("Play Snake!");
+    Console.WriteLine("Use ARROWS to steer");
     Console.WriteLine("Press SPACE to start");
     Console.WriteLine("Press ESC to quit");
     Console.WriteLine($"Highscore {highscore}");
-    ConsoleKeyInfo cki;
     cki = Console.ReadKey(true);
     if (cki.Key == ConsoleKey.Spacebar)
     {
@@ -53,7 +54,6 @@ static int playGame(int highscore)
     string foodPositionXY = String.Empty;
     foodPositionXY = MakeFood(foodPositionXY, playerPositionXY, playerLength, playingFieldWidth, playingFieldHeight);
     bool needFood = false;
-
 
     //Game Loop
     while (playerIsAlive)
@@ -104,43 +104,6 @@ static int playGame(int highscore)
     return highscore;
 
 }
-static bool Crashed(string[] playerArrayXY, int playerLength, int playingFieldWidth, int playingFieldHeight)
-{
-    //Check wall collision
-    string[] playerHeadXY = playerArrayXY[0].Split(" ");
-    if (Int32.Parse(playerHeadXY[0]) == 0 || Int32.Parse(playerHeadXY[0]) == playingFieldWidth - 1 || Int32.Parse(playerHeadXY[1]) == 0 || Int32.Parse(playerHeadXY[1]) == playingFieldHeight - 1)
-    {
-        Console.Beep(200, 150);
-        Console.Beep(200, 150);
-        Console.Beep(200, 150);
-        Console.Beep(140, 200);
-        return false;
-    }
-    //Check player collision
-    for (int i = 1; i < playerLength; i++)
-    {
-        if (playerArrayXY[0] == playerArrayXY[i])
-        {
-            Console.Beep(200, 150);
-            Console.Beep(200, 150);
-            Console.Beep(200, 150);
-            Console.Beep(140, 200);
-            return false;
-        }
-    }
-    return true;
-}
-static bool FoundFood(string foodPositionXY, string[] playerArrayXY)
-{
-    bool foundFood = false;
-
-    if (playerArrayXY[0] == foodPositionXY)
-    {
-        foundFood = true;
-    }
-    return foundFood;
-
-}
 static int[] MovePlayer(ConsoleKey direction, int velocityX, int velocityY)
 {
     if (direction == ConsoleKey.UpArrow)
@@ -179,20 +142,16 @@ static int[] MovePlayer(ConsoleKey direction, int velocityX, int velocityY)
     int[] xYVelocity = new int[] { velocityX, velocityY };
     return xYVelocity;
 }
-static string[] GetPlayerPosition(string[] playerArray, int playerLength, int playerX, int playerY)
+static bool FoundFood(string foodPositionXY, string[] playerArrayXY)
 {
-    for (int i = playerLength - 1; i >= 0; i--)
+    bool foundFood = false;
+
+    if (playerArrayXY[0] == foodPositionXY)
     {
-        if (i > 0)
-        {
-            playerArray[i] = playerArray[i - 1];
-        }
-        else
-        {
-            playerArray[i] = $"{playerX} {playerY}";
-        }
+        foundFood = true;
     }
-    return playerArray;
+    return foundFood;
+
 }
 static string MakeFood(string foodPosition, string[] playerArray, int playerLength, int playingFieldWidth, int playingFieldHeight)
 {
@@ -220,6 +179,47 @@ static string MakeFood(string foodPosition, string[] playerArray, int playerLeng
 
     return foodPosition;
 }
+static string[] GetPlayerPosition(string[] playerArray, int playerLength, int playerX, int playerY)
+{
+    for (int i = playerLength - 1; i >= 0; i--)
+    {
+        if (i > 0)
+        {
+            playerArray[i] = playerArray[i - 1];
+        }
+        else
+        {
+            playerArray[i] = $"{playerX} {playerY}";
+        }
+    }
+    return playerArray;
+}
+static bool Crashed(string[] playerArrayXY, int playerLength, int playingFieldWidth, int playingFieldHeight)
+{
+    //Check wall collision
+    string[] playerHeadXY = playerArrayXY[0].Split(" ");
+    if (Int32.Parse(playerHeadXY[0]) == 0 || Int32.Parse(playerHeadXY[0]) == playingFieldWidth - 1 || Int32.Parse(playerHeadXY[1]) == 0 || Int32.Parse(playerHeadXY[1]) == playingFieldHeight - 1)
+    {
+        Console.Beep(200, 150);
+        Console.Beep(200, 150);
+        Console.Beep(200, 150);
+        Console.Beep(140, 200);
+        return false;
+    }
+    //Check player collision
+    for (int i = 1; i < playerLength; i++)
+    {
+        if (playerArrayXY[0] == playerArrayXY[i])
+        {
+            Console.Beep(200, 150);
+            Console.Beep(200, 150);
+            Console.Beep(200, 150);
+            Console.Beep(140, 200);
+            return false;
+        }
+    }
+    return true;
+}
 static char[,] GetPlayingField(int width, int height, string[] playerPositionXY, int playerLength, string foodPositionXY)
 {
     Random r = new Random();
@@ -234,11 +234,6 @@ static char[,] GetPlayingField(int width, int height, string[] playerPositionXY,
             {
                 playingField[x, y] = '#';
             }
-            //Commented out unnecessary code, but could be used for using different characters for top and bottom frame
-            //else if (x == 0 || x == width - 1)
-            //{
-            //    playingField[x, y] = '#';
-            //}
             else
             {
                 playingField[x, y] = ' ';
