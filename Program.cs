@@ -3,11 +3,12 @@
 //Todo
 //Fancier start screen
 //Save highscore in file inbetween sessions   
-
+Console.CursorVisible = false;
 int highscore = 0;
 while (true)
 {
     ConsoleKeyInfo cki;
+    Console.SetCursorPosition(0, 0);
     Console.WriteLine("Play Snake!");
     Console.WriteLine("Use ARROWS to steer");
     Console.WriteLine("Press SPACE to start");
@@ -16,6 +17,7 @@ while (true)
     cki = Console.ReadKey(true);
     if (cki.Key == ConsoleKey.Spacebar)
     {
+        Console.Clear();
         highscore = playGame(highscore);
     }
     else if (cki.Key == ConsoleKey.Escape)
@@ -24,7 +26,6 @@ while (true)
     }
     Console.Clear();
 }
-Console.Clear();
 Console.WriteLine("See ya!");
 
 //Functions
@@ -84,7 +85,7 @@ static int playGame(int highscore)
         playerPositionXY = GetPlayerPosition(playerPositionXY, playerLength, playerPositionX, playerPositionY);
         playerIsAlive = Crashed(playerPositionXY, playerLength, playingFieldWidth, playingFieldHeight);
 
-        Console.Clear();
+        Console.SetCursorPosition(0, 0);
         Console.WriteLine($"Score {score} Speed {playerSpeed}");
         PrintPlayingField(GetPlayingField(playingFieldWidth, playingFieldHeight, playerPositionXY, playerLength, foodPositionXY), foodPositionXY);
         Thread.Sleep(400 - playerSpeed * 40);
