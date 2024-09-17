@@ -2,9 +2,20 @@
 
 //Todo
 //Fancier start screen
-//Save highscore in file inbetween sessions   
+int highscore;
 Console.CursorVisible = false;
-int highscore = 0;
+string path = Directory.GetCurrentDirectory() + "\\highscore.txt";
+if(!Path.Exists(path))
+{
+    using (StreamWriter writer = new StreamWriter("highscore.txt", true))
+    {
+        writer.Write(0);
+    }
+}
+using (StreamReader reader = new StreamReader("highscore.txt"))
+{
+    highscore = Int32.Parse(reader.ReadToEnd());
+}
 while (true)
 {
     ConsoleKeyInfo cki;
@@ -25,6 +36,10 @@ while (true)
         break;
     }
     Console.Clear();
+}
+using (StreamWriter writer = new StreamWriter("highscore.txt"))
+{
+    writer.Write(highscore);
 }
 Console.WriteLine("See ya!");
 
